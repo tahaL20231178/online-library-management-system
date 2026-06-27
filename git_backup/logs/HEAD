@@ -1,0 +1,11 @@
+0000000000000000000000000000000000000000 bfb7a8349671a30c62bed632a5e0e0af68a26815 TahaPayet <smogfog2005@gmail.com> 1782158459 +0800	commit (initial): Initial project setup: Flask app, models, auth, database
+bfb7a8349671a30c62bed632a5e0e0af68a26815 d763e1ab5988333075d282cb5e356b93d8b55b73 TahaPayet <smogfog2005@gmail.com> 1782158953 +0800	commit: Add admin dashboard, book management, member approval routes and templates
+d763e1ab5988333075d282cb5e356b93d8b55b73 d309a8f8698363e5bce84cd5d4d7048261e98398 TahaPayet <smogfog2005@gmail.com> 1782159869 +0800	commit: Add librarian routes: issue book, return book, loan records
+d309a8f8698363e5bce84cd5d4d7048261e98398 a2e68d86b001258c12cf1bfa1058e746685b3163 TahaPayet <smogfog2005@gmail.com> 1782160126 +0800	commit: Add member routes: dashboard, my loans, browse books
+a2e68d86b001258c12cf1bfa1058e746685b3163 bd91a6ad780c9dd9215b7c8f4c22445879253c35 TahaPayet <smogfog2005@gmail.com> 1782160523 +0800	commit: Add reports page, CSV export, member routes complete
+bd91a6ad780c9dd9215b7c8f4c22445879253c35 3bde92124fd99702b134c20a346b50ddf939e05d TahaPayet <smogfog2005@gmail.com> 1782195221 +0800	commit: Add pytest tests, conftest, 11/11 passing, 74% coverage
+3bde92124fd99702b134c20a346b50ddf939e05d d8b9823b02c032e96d1b7f582f94a068cf0c8758 TahaPayet <smogfog2005@gmail.com> 1782195317 +0800	commit: Remove .coverage from tracking
+d8b9823b02c032e96d1b7f582f94a068cf0c8758 0a1c50e8f87c79a64b4ce89835014309c714cb8c TahaPayet <smogfog2005@gmail.com> 1782195777 +0800	commit: Add README, remove .coverage from tracking
+0a1c50e8f87c79a64b4ce89835014309c714cb8c ba2eb5844b7416e0d53f5b6b85cb6fc6949aa3cf TahaPayet <smogfog2005@gmail.com> 1782280337 +0800	commit: Fix fine description text on home page
+ba2eb5844b7416e0d53f5b6b85cb6fc6949aa3cf 0bcc5129f6771945c4a972fbeb5ee8ec947135ae TahaPayet <smogfog2005@gmail.com> 1782280992 +0800	commit: Add category dropdown, cover image URL field to add/edit book forms
+0bcc5129f6771945c4a972fbeb5ee8ec947135ae 08096da88f39fffc2db07a55405532db2515603e TahaPayet <smogfog2005@gmail.com> 1782281666 +0800	commit: Add 55 books with covers, category filter, copy counts, cover image field

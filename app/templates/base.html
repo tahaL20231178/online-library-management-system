@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}看书 Library{% endblock %}</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%231b2838'/><circle cx='32' cy='32' r='30' fill='none' stroke='%231b2838' stroke-width='2'/><circle cx='32' cy='32' r='26' fill='none' stroke='%23d4af37' stroke-width='1' opacity='0.6'/><line x1='14' y1='32' x2='50' y2='32' stroke='%23d4af37' stroke-width='1' opacity='0.5'/><text x='32' y='28' text-anchor='middle' fill='%23d4af37' font-family='serif' font-weight='700' font-size='18'>看</text><text x='32' y='50' text-anchor='middle' fill='%23d4af37' font-family='serif' font-weight='700' font-size='18'>书</text></svg>">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-main: #0f1620;
+            --bg-sidebar: #0f1620;
+            --bg-card: #1b2838;
+            --bg-card-hover: #243348;
+            --accent: #d4af37;
+            --accent-green: #3aaf5c;
+            --accent-red: #e74c3c;
+            --accent-yellow: #e8b84b;
+            --text-primary: #e8e0d8;
+            --text-muted: #8a8a8a;
+            --border: #2c3e50;
+            --shadow: rgba(0,0,0,0.3);
+            --btn-close-filter: invert(1);
+            --accent-hover: #c49e30;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f7f4ef;
+            --bg-sidebar: #1b2838;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0ece5;
+            --accent: #c9a03c;
+            --accent-green: #2d9a4e;
+            --accent-red: #c0392b;
+            --accent-yellow: #d4a843;
+            --text-primary: #1e1e1e;
+            --text-muted: #7a7a7a;
+            --border: #e0dad3;
+            --shadow: rgba(0,0,0,0.06);
+            --btn-close-filter: invert(0);
+            --accent-hover: #ad8a32;
+        }
+        [data-theme="light"] .dark-table thead th {
+            background: var(--bg-card-hover);
+        }
+        [data-theme="light"] .sidebar-link:hover,
+        [data-theme="light"] .sidebar-link.active {
+            background: var(--bg-card-hover);
+        }
+        [data-theme="light"] .btn-ghost:hover {
+            background: var(--bg-card-hover);
+        }
+        [data-theme="light"] .role-card .role-sub {
+            background: var(--bg-card-hover);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+        }
+
+        .top-navbar .brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-seal {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .brand-text .brand-chinese {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: serif;
+            letter-spacing: 2px;
+        }
+
+        .brand-text .brand-roman {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
+
+        .top-navbar .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-navbar .user-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .top-navbar .logout-btn {
+            color: var(--accent-red);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .top-navbar .logout-btn:hover { color: #ff6b6b; }
+
+        .theme-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .theme-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--accent);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 240px;
+            height: calc(100vh - 60px);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            overflow-y: auto;
+            z-index: 999;
+        }
+
+        .sidebar-section {
+            padding: 0 16px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 0 12px;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .sidebar-link.active {
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+        }
+
+        .sidebar-link i { font-size: 1rem; width: 18px; }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 240px;
+            margin-top: 60px;
+            padding: 32px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .main-content.no-sidebar {
+            margin-left: 0;
+        }
+
+        /* CARDS */
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .stat-card .stat-icon { font-size: 2rem; margin-bottom: 12px; }
+        .stat-card .stat-value { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+        .stat-card .stat-label { font-size: 0.85rem; color: var(--text-muted); }
+        .stat-card .stat-link { font-size: 0.8rem; color: var(--accent); text-decoration: none; margin-top: 12px; display: inline-block; }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-card.blue::before { background: var(--accent); }
+        .stat-card.green::before { background: var(--accent-green); }
+        .stat-card.yellow::before { background: var(--accent-yellow); }
+        .stat-card.red::before { background: var(--accent-red); }
+
+        /* TABLES */
+        .dark-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .dark-table thead th {
+            background: var(--bg-card-hover);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 16px;
+            border: none;
+            font-weight: 600;
+        }
+
+        .dark-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .dark-table tbody tr:last-child td { border-bottom: none; }
+        .dark-table tbody tr:hover { background: var(--bg-card-hover); }
+
+        /* PAGE HEADER */
+        .page-header {
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h2 { font-size: 1.6rem; font-weight: 700; margin: 0; }
+        .page-header p { color: var(--text-muted); margin: 4px 0 0; font-size: 0.9rem; }
+
+        /* BUTTONS */
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-accent:hover { background: var(--accent-hover); color: white; transform: translateY(-1px); }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost:hover { background: var(--bg-card); color: var(--text-primary); }
+
+        /* FORMS */
+        .dark-form .form-control,
+        .dark-form .form-select {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+
+        .dark-form .form-control:focus,
+        .dark-form .form-select:focus {
+            background: var(--bg-main);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+        }
+
+        .dark-form .form-label { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 6px; }
+
+        /* BADGES */
+        .badge-active   { background: rgba(46,204,113,0.15); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; }
+        .badge-overdue  { background: rgba(231,76,60,0.15);  color: var(--accent-red); padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; }
+        .badge-returned { background: rgba(79,142,247,0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; }
+        .badge-pending  { background: rgba(243,156,18,0.15); color: var(--accent-yellow); padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; }
+        .badge-approved { background: rgba(46,204,113,0.15); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; }
+
+        /* ALERTS */
+        .alert { border-radius: 8px; border: none; padding: 12px 16px; margin-bottom: 16px; font-size: 0.9rem; }
+        .alert-success { background: rgba(46,204,113,0.15); color: var(--accent-green); }
+        .alert-danger  { background: rgba(231,76,60,0.15);  color: var(--accent-red); }
+        .alert-warning { background: rgba(243,156,18,0.15); color: var(--accent-yellow); }
+        .alert-info    { background: rgba(79,142,247,0.15); color: var(--accent); }
+
+        /* SEARCH BAR */
+        .search-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text-primary);
+            width: 100%;
+        }
+
+        .search-bar:focus { outline: none; border-color: var(--accent); }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAVBAR -->
+<nav class="top-navbar">
+    <a href="{{ url_for('main.index') }}" class="brand">
+        <!-- SEAL LOGO -->
+        <svg class="brand-seal" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" fill="#1b2838"/>
+            <circle cx="32" cy="32" r="30" fill="none" stroke="#1b2838" stroke-width="2"/>
+            <circle cx="32" cy="32" r="25" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6"/>
+            <line x1="14" y1="32" x2="50" y2="32" stroke="#d4af37" stroke-width="0.8" opacity="0.5"/>
+            <text x="32" y="28" text-anchor="middle" fill="#d4af37" font-family="serif" font-weight="700" font-size="18">看</text>
+            <text x="32" y="50" text-anchor="middle" fill="#d4af37" font-family="serif" font-weight="700" font-size="18">书</text>
+        </svg>
+        <div class="brand-text">
+            <span class="brand-chinese">看书</span>
+            <span class="brand-roman">Kanshu Library</span>
+        </div>
+    </a>
+    <div class="nav-right">
+        <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+            <i class="bi bi-moon-stars"></i>
+        </button>
+        <a href="{{ url_for('set_lang', code='zh' if request.cookies.get('lang') != 'zh' else 'en') }}" class="theme-btn" title="{{ _('Language') }}">
+            <i class="bi bi-globe2"></i>
+            <span style="font-size:0.7rem;margin-left:2px;">{{ 'EN' if request.cookies.get('lang') == 'zh' else '中' }}</span>
+        </a>
+        {% if current_user.is_authenticated %}
+        <span class="user-badge">
+            <i class="bi bi-person-circle"></i>
+            {{ current_user.name }}
+            <span style="color: var(--text-muted); margin-left:4px;">({{ current_user.role }})</span>
+        </span>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+            <i class="bi bi-box-arrow-right"></i> {{ _('Logout') }}
+        </a>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn-ghost" style="padding:6px 14px;">{{ _('Login') }}</a>
+        <a href="{{ url_for('auth.register') }}" class="btn-accent" style="padding:6px 14px;">{{ _('Register') }}</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- SIDEBAR (only for authenticated users) -->
+{% if current_user.is_authenticated %}
+<div class="sidebar">
+    {% if current_user.role == 'admin' %}
+    <div class="sidebar-section">
+        <div class="sidebar-label">{{ _('Admin Panel') }}</div>
+        <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link">
+            <i class="bi bi-grid"></i> {{ _('Dashboard') }}
+        </a>
+        <a href="{{ url_for('admin.books') }}" class="sidebar-link">
+            <i class="bi bi-book"></i> {{ _('Books') }}
+        </a>
+        <a href="{{ url_for('admin.members') }}" class="sidebar-link">
+            <i class="bi bi-people"></i> {{ _('Members') }}
+        </a>
+        <a href="{{ url_for('admin.loans') }}" class="sidebar-link">
+            <i class="bi bi-journal-text"></i> {{ _('Loan Records') }}
+        </a>
+        <a href="{{ url_for('admin.reports') }}" class="sidebar-link">
+            <i class="bi bi-bar-chart"></i> {{ _('Reports') }}
+        </a>
+    </div>
+    {% elif current_user.role == 'librarian' %}
+    <div class="sidebar-section">
+        <div class="sidebar-label">{{ _('Librarian Panel') }}</div>
+        <a href="{{ url_for('librarian.dashboard') }}" class="sidebar-link">
+            <i class="bi bi-grid"></i> {{ _('Dashboard') }}
+        </a>
+        <a href="{{ url_for('librarian.loans') }}" class="sidebar-link">
+            <i class="bi bi-journal-text"></i> {{ _('Loan Records') }}
+        </a>
+        <a href="{{ url_for('librarian.issue_book') }}" class="sidebar-link">
+            <i class="bi bi-plus-circle"></i> {{ _('Issue Book') }}
+        </a>
+    </div>
+    {% elif current_user.role == 'member' %}
+    <div class="sidebar-section">
+        <div class="sidebar-label">{{ _('Member Panel') }}</div>
+        <a href="{{ url_for('member.dashboard') }}" class="sidebar-link">
+            <i class="bi bi-grid"></i> {{ _('Dashboard') }}
+        </a>
+        <a href="{{ url_for('member.my_loans') }}" class="sidebar-link">
+            <i class="bi bi-journal-bookmark"></i> {{ _('My Loans') }}
+        </a>
+        <a href="{{ url_for('member.browse_books') }}" class="sidebar-link">
+            <i class="bi bi-search"></i> {{ _('Browse Books') }}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- MAIN CONTENT -->
+<div class="main-content {% if not current_user.is_authenticated %}no-sidebar{% endif %}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                        style="filter: var(--btn-close-filter);"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    const toggle = document.getElementById('themeToggle');
+    const icon = toggle.querySelector('i');
+    const html = document.documentElement;
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light') {
+        html.setAttribute('data-theme', 'light');
+        icon.className = 'bi bi-sun';
+    }
+    toggle.addEventListener('click', function() {
+        const isLight = html.getAttribute('data-theme') === 'light';
+        if (isLight) {
+            html.removeAttribute('data-theme');
+            icon.className = 'bi bi-moon-stars';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            html.setAttribute('data-theme', 'light');
+            icon.className = 'bi bi-sun';
+            localStorage.setItem('theme', 'light');
+        }
+    });
+})();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

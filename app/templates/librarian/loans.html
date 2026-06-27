@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Loan Records') }}{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2>{{ _('Loan Records') }}</h2>
+        <p>{{ _('All borrowing and return transactions.') }}</p>
+    </div>
+    <a href="{{ url_for('librarian.issue_book') }}" class="btn-accent">
+        <i class="bi bi-plus-circle"></i> {{ _('Issue Book') }}
+    </a>
+</div>
+
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+    <table class="dark-table">
+        <thead>
+            <tr>
+                <th>{{ _('Member') }}</th>
+                <th>{{ _('Book') }}</th>
+                <th>{{ _('Borrow Date') }}</th>
+                <th>{{ _('Due Date') }}</th>
+                <th>{{ _('Return Date') }}</th>
+                <th>{{ _('Status') }}</th>
+                <th>{{ _('Fine') }}</th>
+                <th>{{ _('Action') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            <tr>
+                <td style="font-weight:500;">{{ loan.member.name }}</td>
+                <td>{{ loan.book.title }}</td>
+                <td style="color:var(--text-muted);">{{ loan.borrow_date }}</td>
+                <td>
+                    {% if not loan.is_returned and loan.due_date < today %}
+                        <span class="badge-overdue">{{ loan.due_date }}</span>
+                    {% else %}
+                        {{ loan.due_date }}
+                    {% endif %}
+                </td>
+                <td style="color:var(--text-muted);">{{ loan.return_date or '—' }}</td>
+                <td>
+                    {% if loan.is_returned %}
+                        <span class="badge-returned">{{ _('Returned') }}</span>
+                    {% elif loan.due_date < today %}
+                        <span class="badge-overdue">{{ _('Overdue') }}</span>
+                    {% else %}
+                        <span class="badge-active">{{ _('Active') }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if loan.fine %}
+                        <span style="color:var(--accent-red);">¥{{ loan.fine.amount }}</span>
+                        {% if loan.fine.is_paid %}
+                            <span class="badge-approved" style="margin-left:4px;">{{ _('Paid') }}</span>
+                        {% endif %}
+                    {% else %}—{% endif %}
+                </td>
+                <td>
+                    {% if not loan.is_returned %}
+                        <a href="{{ url_for('librarian.return_book', loan_id=loan.id) }}"
+                           onclick="return confirm('{{ _('Confirm') }}?')"
+                           style="color:var(--accent-green); text-decoration:none; font-size:0.85rem;">
+                            <i class="bi bi-check-circle"></i> {{ _('Return') }}
+                        </a>
+                    {% else %}
+                        <span style="color:var(--text-muted);">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" style="text-align:center; color:var(--text-muted); padding:40px;">
+                    {{ _('No loan records found.') }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

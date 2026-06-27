@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Librarian Dashboard') }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ _('Librarian Dashboard') }}</h2>
+    <p>{{ _('Welcome back') }}, {{ current_user.name }}. {{ _('Manage loans and book returns.') }}</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-left:3px solid var(--accent-yellow);
+                    border-radius:10px; padding:16px;">
+            <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">{{ _('Active Loans') }}</div>
+            <div style="font-size:1.6rem; font-weight:700; color:var(--text-primary);">{{ active_loans }}</div>
+            <a href="{{ url_for('librarian.loans') }}" style="font-size:0.78rem; color:var(--accent-yellow); text-decoration:none;">{{ _('View All') }} →</a>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-left:3px solid var(--accent-red);
+                    border-radius:10px; padding:16px;">
+            <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">{{ _('Overdue') }}</div>
+            <div style="font-size:1.6rem; font-weight:700; color:var(--accent-red);">{{ overdue_loans }}</div>
+            <a href="{{ url_for('librarian.loans') }}" style="font-size:0.78rem; color:var(--accent-red); text-decoration:none;">{{ _('Review') }} →</a>
+        </div>
+    </div>
+</div>
+
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:24px;">
+    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;">{{ _('Quick Actions') }}</div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="{{ url_for('librarian.issue_book') }}" class="btn-accent">
+            <i class="bi bi-plus-circle"></i> {{ _('Issue Book') }}
+        </a>
+        <a href="{{ url_for('librarian.loans') }}" class="btn-ghost">
+            <i class="bi bi-journal-text"></i> {{ _('All Loans') }}
+        </a>
+    </div>
+</div>
+{% endblock %}

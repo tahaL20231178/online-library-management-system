@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Member Management') }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ _('Member Management') }}</h2>
+    <p>{{ _('Approve, review and manage library members.') }}</p>
+</div>
+
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+    <table class="dark-table">
+        <thead>
+            <tr>
+                <th>{{ _('Name') }}</th>
+                <th>{{ _('Email') }}</th>
+                <th>{{ _('Phone') }}</th>
+                <th>{{ _('Status') }}</th>
+                <th>{{ _('Actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td style="font-weight:500;">{{ member.name }}</td>
+                <td style="color:var(--text-muted);">{{ member.email }}</td>
+                <td style="color:var(--text-muted);">{{ member.phone or '—' }}</td>
+                <td>
+                    {% if member.is_approved %}
+                        <span class="badge-approved">{{ _('Approved') }}</span>
+                    {% else %}
+                        <span class="badge-pending">{{ _('Pending') }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not member.is_approved %}
+                        <a href="{{ url_for('admin.approve_member', user_id=member.id) }}"
+                           style="color:var(--accent-green); text-decoration:none; margin-right:12px; font-size:0.85rem;">
+                            <i class="bi bi-check-circle"></i> {{ _('Approve') }}
+                        </a>
+                        <a href="{{ url_for('admin.reject_member', user_id=member.id) }}"
+                           onclick="return confirm('{{ _('Reject') }}?')"
+                           style="color:var(--accent-red); text-decoration:none; font-size:0.85rem;">
+                            <i class="bi bi-x-circle"></i> {{ _('Reject') }}
+                        </a>
+                    {% else %}
+                        <span style="color:var(--text-muted); font-size:0.85rem;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center; color:var(--text-muted); padding:40px;">
+                    <i class="bi bi-people" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+                    {{ _('No members found.') }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

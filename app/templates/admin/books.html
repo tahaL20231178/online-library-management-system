@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Book Catalog') }}{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2>{{ _('Book Catalog') }}</h2>
+        <p>{{ _('Manage all books in the library system.') }}</p>
+    </div>
+    <a href="{{ url_for('admin.add_book') }}" class="btn-accent">
+        <i class="bi bi-plus-circle"></i> {{ _('Add Book') }}
+    </a>
+</div>
+
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:20px;">
+    <form method="GET" style="display:flex; gap:10px;">
+        <input type="text" name="search" class="search-bar" placeholder="{{ _('Search by title, author or ISBN...') }}" value="{{ search }}" style="flex:1;">
+        <button type="submit" class="btn-accent">{{ _('Search') }}</button>
+        {% if search %}
+        <a href="{{ url_for('admin.books') }}" class="btn-ghost">{{ _('Clear') }}</a>
+        {% endif %}
+    </form>
+</div>
+
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+    <table class="dark-table">
+        <thead>
+            <tr>
+                <th>{{ _('Title') }}</th>
+                <th>{{ _('Author') }}</th>
+                <th>{{ _('ISBN') }}</th>
+                <th>{{ _('Category') }}</th>
+                <th>{{ _('Total') }}</th>
+                <th>{{ _('Available') }}</th>
+                <th>{{ _('Actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>
+    <div style="display:flex; align-items:center; gap:10px;">
+        {% if book.cover_image %}
+        <img src="{{ book.cover_image }}" alt="cover"
+             style="width:32px; height:48px; object-fit:cover; border-radius:4px;">
+        {% else %}
+        <div style="width:32px; height:48px; background:var(--bg-card-hover); border-radius:4px;
+                    display:flex; align-items:center; justify-content:center;">
+            <i class="bi bi-book" style="color:var(--text-muted); font-size:0.8rem;"></i>
+        </div>
+        {% endif %}
+        <span style="font-weight:500;">{{ book.title }}</span>
+    </div>
+</td>
+                <td style="color:var(--text-muted);">{{ book.author }}</td>
+                <td style="color:var(--text-muted); font-family:monospace;">{{ book.isbn }}</td>
+                <td>{{ book.category or '—' }}</td>
+                <td>{{ book.total_copies }}</td>
+                <td>
+                    {% if book.available_copies > 0 %}
+                        <span class="badge-approved">{{ book.available_copies }} {{ _('left') }}</span>
+                    {% else %}
+                        <span class="badge-overdue">{{ _('Out') }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('admin.edit_book', book_id=book.id) }}"
+                       style="color:var(--accent); text-decoration:none; margin-right:12px; font-size:0.85rem;">
+                        <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                    </a>
+                    <a href="{{ url_for('admin.delete_book', book_id=book.id) }}"
+                       onclick="return confirm('{{ _("Delete") }}?')"
+                       style="color:var(--accent-red); text-decoration:none; font-size:0.85rem;">
+                        <i class="bi bi-trash"></i> {{ _('Delete') }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align:center; color:var(--text-muted); padding:40px;">
+                    <i class="bi bi-book" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+                    {{ _('No books found.') }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

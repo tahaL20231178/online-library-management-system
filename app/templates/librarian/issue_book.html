@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Issue Book') }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ _('Issue Book') }}</h2>
+    <p>{{ _('Assign a book to an approved member. Due date is set to 14 days from today.') }}</p>
+</div>
+
+<div style="background:rgba(79,142,247,0.08); border:1px solid rgba(79,142,247,0.3);
+            border-radius:12px; padding:20px; margin-bottom:24px;">
+    <div style="font-size:0.75rem; color:var(--accent); text-transform:uppercase;
+                letter-spacing:1px; margin-bottom:12px;">
+        <i class="bi bi-info-circle"></i> {{ _('Borrowing Rules Reminder') }}
+    </div>
+    <ul style="color:var(--text-muted); font-size:0.88rem; margin:0; padding-left:20px; line-height:2;">
+        <li>{{ _('Each member may borrow a maximum of 5 books at a time.') }}</li>
+        <li>{{ _('The loan period is 14 days from the issue date.') }}</li>
+        <li>{{ _('A fine of ¥0.50 per day is charged for each day after the due date.') }}</li>
+        <li>{{ _('Books must be returned in good condition.') }}</li>
+        <li>{{ _('Lost or damaged books must be reported to the librarian immediately.') }}</li>
+        <li>{{ _('Fines must be paid before borrowing additional books.') }}</li>
+    </ul>
+</div>
+
+<div style="max-width:560px;">
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:28px;">
+        <form method="POST" class="dark-form" onsubmit="return confirmIssue()">
+            <div class="mb-3">
+                <label class="form-label">{{ _('Select Member') }}</label>
+                <select name="user_id" class="form-select" required>
+                    <option value="">{{ _('-- Choose Member --') }}</option>
+                    {% for member in members %}
+                    <option value="{{ member.id }}">{{ member.name }} ({{ member.email }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">{{ _('Select Book') }}</label>
+                <select name="book_id" class="form-select" required>
+                    <option value="">{{ _('-- Choose Book --') }}</option>
+                    {% for book in books %}
+                    <option value="{{ book.id }}">{{ book.title }} — {{ book.author }} ({{ book.available_copies }} {{ _('available') }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button type="submit" class="btn-accent">
+                    <i class="bi bi-check-circle"></i> {{ _('Issue Book') }}
+                </button>
+                <a href="{{ url_for('librarian.loans') }}" class="btn-ghost">{{ _('Cancel') }}</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="confirmModal" style="display:none; position:fixed; top:0; left:0; width:100%;
+     height:100%; background:rgba(0,0,0,0.7); z-index:9999;
+     align-items:center; justify-content:center;">
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:16px;
+                padding:32px; max-width:440px; width:90%; text-align:center;">
+        <i class="bi bi-exclamation-triangle" style="font-size:2.5rem; color:var(--accent-yellow);
+           display:block; margin-bottom:16px;"></i>
+        <h4 style="margin-bottom:8px;">{{ _('Confirm Book Issue') }}</h4>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">
+            {{ _('By proceeding, the member acknowledges the borrowing rules including the 14-day loan period and ¥0.50/day overdue fine.') }}
+        </p>
+        <div style="display:flex; gap:12px; justify-content:center;">
+            <button onclick="submitForm()" class="btn-accent">
+                <i class="bi bi-check-circle"></i> {{ _('Confirm Issue') }}
+            </button>
+            <button onclick="closeModal()" class="btn-ghost">{{ _('Cancel') }}</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var formElement = null;
+
+    function confirmIssue() {
+        var modal = document.getElementById('confirmModal');
+        modal.style.display = 'flex';
+        formElement = document.querySelector('form');
+        return false;
+    }
+
+    function submitForm() {
+        document.getElementById('confirmModal').style.display = 'none';
+        formElement.onsubmit = null;
+        formElement.submit();
+    }
+
+    function closeModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+</script>
+{% endblock %}

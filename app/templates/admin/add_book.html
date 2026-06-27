@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Add Book') }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ _('Add New Book') }}</h2>
+    <p>{{ _('Enter book details to add it to the catalog.') }}</p>
+</div>
+<div style="max-width:560px;">
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:28px;">
+        <form method="POST" class="dark-form">
+            <div class="mb-3">
+                <label class="form-label">{{ _('Title') }}</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">{{ _('Author') }}</label>
+                <input type="text" name="author" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">{{ _('ISBN') }}</label>
+                <input type="text" name="isbn" class="form-control" required maxlength="13">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">{{ _('Category') }}</label>
+                <select name="category" class="form-select">
+                    <option value="">{{ _('-- Select Category --') }}</option>
+                    <option>Fiction</option>
+                    <option>Non-Fiction</option>
+                    <option>Science Fiction</option>
+                    <option>Fantasy</option>
+                    <option>Mystery</option>
+                    <option>Thriller</option>
+                    <option>Romance</option>
+                    <option>Horror</option>
+                    <option>Biography</option>
+                    <option>Autobiography</option>
+                    <option>History</option>
+                    <option>Science</option>
+                    <option>Technology</option>
+                    <option>Mathematics</option>
+                    <option>Philosophy</option>
+                    <option>Psychology</option>
+                    <option>Self-Help</option>
+                    <option>Business</option>
+                    <option>Economics</option>
+                    <option>Politics</option>
+                    <option>Law</option>
+                    <option>Medicine</option>
+                    <option>Art</option>
+                    <option>Music</option>
+                    <option>Poetry</option>
+                    <option>Drama</option>
+                    <option>Children</option>
+                    <option>Young Adult</option>
+                    <option>Travel</option>
+                    <option>Religion</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">{{ _('Cover Image URL') }}</label>
+                <input type="text" name="cover_image" class="form-control"
+                       placeholder="https://covers.openlibrary.org/...">
+            </div>
+            <div class="mb-4">
+                <label class="form-label">{{ _('Total Copies') }}</label>
+                <input type="number" name="total_copies" class="form-control" value="1" min="1" required>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button type="submit" class="btn-accent">
+                    <i class="bi bi-plus-circle"></i> {{ _('Add Book') }}
+                </button>
+                <a href="{{ url_for('admin.books') }}" class="btn-ghost">{{ _('Cancel') }}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Loan Records') }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ _('Loan Records') }}</h2>
+    <p>{{ _('Review all borrowing activity and confirm book returns.') }}</p>
+</div>
+
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+    <table class="dark-table">
+        <thead>
+            <tr>
+                <th>{{ _('Member') }}</th>
+                <th>{{ _('Book') }}</th>
+                <th>{{ _('Borrow Date') }}</th>
+                <th>{{ _('Due Date') }}</th>
+                <th>{{ _('Days Remaining') }}</th>
+                <th>{{ _('Status') }}</th>
+                <th>{{ _('Fine') }}</th>
+                <th>{{ _('Action') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            {% set days_remaining = (loan.due_date - today).days %}
+            <tr>
+                <td style="font-weight:500;">{{ loan.member.name }}</td>
+                <td>{{ loan.book.title }}</td>
+                <td style="color:var(--text-muted);">{{ loan.borrow_date }}</td>
+                <td>{{ loan.due_date }}</td>
+                <td>
+                    {% if loan.is_returned %}
+                        <span style="color:var(--text-muted);">—</span>
+                    {% elif days_remaining > 0 %}
+                        <span style="color:var(--accent-green); font-weight:600;">
+                            {{ days_remaining }} {{ _('days left') }}
+                        </span>
+                    {% elif days_remaining == 0 %}
+                        <span style="color:var(--accent-yellow); font-weight:600;">
+                            {{ _('Due today') }}
+                        </span>
+                    {% else %}
+                        <span style="color:var(--accent-red); font-weight:600;">
+                            {{ days_remaining }} {{ _('days') }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if loan.is_returned %}
+                        <span class="badge-returned">{{ _('Returned') }}</span>
+                    {% elif loan.due_date < today %}
+                        <span class="badge-overdue">{{ _('Overdue') }}</span>
+                    {% else %}
+                        <span class="badge-active">{{ _('Active') }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if loan.fine %}
+                        <span style="color:var(--accent-red);">¥{{ loan.fine.amount }}</span>
+                        {% if loan.fine.is_paid %}
+                            <span class="badge-approved" style="margin-left:4px;">{{ _('Paid') }}</span>
+                        {% else %}
+                            <span class="badge-overdue" style="margin-left:4px;">{{ _('Unpaid') }}</span>
+                        {% endif %}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not loan.is_returned %}
+                        <a href="{{ url_for('admin.confirm_return', loan_id=loan.id) }}"
+                           onclick="return confirm('{{ _('Confirm') }}?')"
+                           style="color:var(--accent-green); text-decoration:none; font-size:0.85rem;">
+                            <i class="bi bi-check-circle"></i> {{ _('Confirm Return') }}
+                        </a>
+                    {% else %}
+                        <span style="color:var(--text-muted); font-size:0.85rem;">
+                            {{ _('Returned') }} {{ loan.return_date }}
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" style="text-align:center; color:var(--text-muted); padding:40px;">
+                    {{ _('No loan records found.') }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

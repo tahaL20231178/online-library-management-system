@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Register') }}{% endblock %}
+{% block content %}
+<div style="min-height:80vh; display:flex; align-items:center; justify-content:center;">
+    <div style="width:100%; max-width:440px;">
+        <div style="text-align:center; margin-bottom:32px;">
+            <div style="font-size:2rem; margin-bottom:8px;">📚</div>
+            <h2 style="font-size:1.5rem; font-weight:700;">{{ _('Create an Account') }}</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem;">{{ _('Register as a library member. Admin approval required.') }}</p>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:28px;">
+            <form method="POST" class="dark-form">
+                <div class="mb-3">
+                    <label class="form-label">{{ _('Full Name') }}</label>
+                    <input type="text" name="name" class="form-control"
+                           placeholder="{{ _('Your full name') }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ _('Email Address') }}</label>
+                    <input type="email" name="email" class="form-control"
+                           placeholder="you@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ _('Password') }}</label>
+                    <input type="password" name="password" class="form-control"
+                           placeholder="{{ _('Min. 8 characters') }}" required minlength="8">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">{{ _('Confirm Password') }}</label>
+                    <input type="password" name="confirm_password" class="form-control"
+                           placeholder="{{ _('Repeat your password') }}" required minlength="8">
+                </div>
+                <button type="submit" class="btn-accent"
+                        style="width:100%; justify-content:center; padding:10px;">
+                    <i class="bi bi-person-plus"></i> {{ _('Register') }}
+                </button>
+            </form>
+        </div>
+        <p style="text-align:center; margin-top:16px; color:var(--text-muted); font-size:0.85rem;">
+            {{ _('Already have an account?') }}
+            <a href="{{ url_for('auth.login') }}" style="color:var(--accent); text-decoration:none;">{{ _('Sign in') }}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
