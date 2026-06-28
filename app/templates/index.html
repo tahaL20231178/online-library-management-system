@@ -19,6 +19,55 @@
         from { opacity: 0; transform: translateX(-40px); }
         to { opacity: 1; transform: translateX(0); }
     }
+    @keyframes drift-book {
+        0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+        10% { opacity: 0.15; }
+        90% { opacity: 0.15; }
+        100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+    }
+    @keyframes float-book {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-30px) rotate(3deg); }
+    }
+
+    .bg-books {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .bg-book {
+        position: absolute;
+        font-size: 2rem;
+        color: var(--accent);
+        opacity: 0.06;
+        animation: float-book 8s ease-in-out infinite;
+    }
+    .bg-book.drift {
+        opacity: 0;
+        animation: drift-book 12s ease-in-out infinite;
+    }
+    .bg-book:nth-child(1) { top: 5%; left: 3%; font-size: 2.4rem; animation-delay: 0s; --dx: 120px; --dy: -80px; --rot: 15deg; }
+    .bg-book:nth-child(2) { top: 15%; right: 2%; font-size: 1.8rem; animation-delay: -2s; --dx: -100px; --dy: 60px; --rot: -10deg; }
+    .bg-book:nth-child(3) { top: 60%; left: 1%; font-size: 2.2rem; animation-delay: -4s; --dx: 80px; --dy: 100px; --rot: 20deg; }
+    .bg-book:nth-child(4) { top: 75%; right: 5%; font-size: 1.6rem; animation-delay: -1s; --dx: -60px; --dy: -120px; --rot: -25deg; }
+    .bg-book:nth-child(5) { top: 35%; left: 8%; font-size: 2.8rem; animation-delay: -6s; --dx: 150px; --dy: 40px; --rot: 8deg; }
+    .bg-book:nth-child(6) { top: 45%; right: 1%; font-size: 1.5rem; animation-delay: -3s; --dx: -130px; --dy: -50px; --rot: -15deg; }
+    .bg-book:nth-child(7) { top: 85%; left: 10%; font-size: 2rem; animation-delay: -5s; --dx: 90px; --dy: -60px; --rot: 12deg; }
+    .bg-book:nth-child(8) { top: 10%; left: 50%; font-size: 1.7rem; animation-delay: -7s; --dx: -50px; --dy: 90px; --rot: -8deg; }
+    .bg-book:nth-child(9) { top: 70%; left: 6%; font-size: 2.6rem; animation-delay: -2.5s; --dx: 110px; --dy: -90px; --rot: 18deg; }
+    .bg-book:nth-child(10) { top: 25%; right: 8%; font-size: 1.9rem; animation-delay: -4.5s; --dx: -80px; --dy: 70px; --rot: -20deg; }
+
+    .hero {
+        min-height: calc(100vh - 60px);
+        display: flex;
+        align-items: center;
+        background: var(--bg-main);
+        position: relative;
+        overflow: hidden;
+        padding: 40px 24px;
+    }
 
     .hero {
         min-height: calc(100vh - 60px);
@@ -432,6 +481,18 @@
 </style>
 
 <div class="hero">
+    <div class="bg-books">
+        <div class="bg-book drift"><i class="bi bi-book"></i></div>
+        <div class="bg-book drift"><i class="bi bi-bookmark"></i></div>
+        <div class="bg-book drift"><i class="bi bi-journal"></i></div>
+        <div class="bg-book drift"><i class="bi bi-journal-text"></i></div>
+        <div class="bg-book drift"><i class="bi bi-book"></i></div>
+        <div class="bg-book drift"><i class="bi bi-bookmark"></i></div>
+        <div class="bg-book drift"><i class="bi bi-journal"></i></div>
+        <div class="bg-book drift"><i class="bi bi-journal-text"></i></div>
+        <div class="bg-book drift"><i class="bi bi-book"></i></div>
+        <div class="bg-book drift"><i class="bi bi-journal-richtext"></i></div>
+    </div>
     <div class="hero-glow"></div>
     <div class="hero-glow-2"></div>
     <div class="hero-grid">
